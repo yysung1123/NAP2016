@@ -19,7 +19,7 @@ def service_alive_check_udp(ip, port, output_info):
 
 def dns_check(url, record_type, test_data, output_info):
     try:
-        output = check_output(['dig', '+noall', '+answer', url, record_type]).decode()
+        output = check_output(['dig', '+noall', '+answer', url, record_type, '@8.8.8.8']).decode()
         if test_data in output:
             print("{} Success".format(output_info))
         else:
