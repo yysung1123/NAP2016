@@ -1,7 +1,21 @@
 from subprocess import check_output
 import requests
-domain_url= input("Please input your domain name: ")
-ip = input("Please input your ip: ")
+
+def service_alive_check_tcp(ip, port, output_info):
+    try:
+        check_output(['nc', '-z', ip, str(port)])
+        print("TCP {} is alive".format(output_info))
+    except:
+        print("TCP {} is not alive".format(output_info))
+        exit(1)
+        
+def service_alive_check_udp(ip, port, output_info):
+    try:
+        check_output(['nc', '-u', '-z', ip, str(port)])
+        print("UDP {} is alive".format(output_info))
+    except:
+        print("UDP {} is not alive".format(output_info))
+        exit(1)
 
 def dns_check(url, record_type, test_data, output_info):
     try:
@@ -24,7 +38,16 @@ def web_check(url):
     except:
         print("Web Test Failed")
         exit(1)
-    
+
+domain_url= input("Please input your domain name: ")
+ip = input("Please input your ip: ")
+
+service_alive_check_tcp(ip, 53, "DNS")
+
+service_alive_check_udp(ip, 53, "DNS")
+
+service_alive_check_tcp(ip, 80, "Web")
+
 dns_check("NAP2016-DNS1.nasa.{}".format(domain_url),
           "cname",
           "IN CNAME nasa.cs.nctu.edu.tw.",
